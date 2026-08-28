@@ -51,5 +51,10 @@ Desenvolvimento do loop principal main() com o ciclo game_over
 **Maior dificuldade encontrada e como resolvi(ou nao resolvi)**
 Gerir a colisao ao descer o bloco.
 
+**Proximo passo planeado**
+Criar uma funcao para eliminar linhas completas no tabuleiro.
+Adicionar um temporizador para o bloco cair automaticamente sem depender do utilizador.
+Implementar uma condicao de game over quando os blocos atingem o inicio do tabuleiro.
+
 
 
