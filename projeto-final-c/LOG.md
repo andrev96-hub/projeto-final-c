@@ -45,16 +45,67 @@ Adicionar um sistema de pontuacao
 ===============================
 ## Sessao 4
 **Funcionalidades implementadas**
-Implementacao do movimento da peca por comandos via teclado(A,D,S)
+Implementacao do movimento da peca por comandos via teclado(A,D,S,W)
+Implementacao do rotate_piece
 Desenvolvimento do loop principal main() com o ciclo game_over
+
 
 **Maior dificuldade encontrada e como resolvi(ou nao resolvi)**
 Gerir a colisao ao descer o bloco.
+Fazer com que o bloco faca o rotate
 
 **Proximo passo planeado**
 Criar uma funcao para eliminar linhas completas no tabuleiro.
-Adicionar um temporizador para o bloco cair automaticamente sem depender do utilizador.
+Adicionar um temporizador.
+E implementar gravidade automatica para o bloco cair automaticamente sem depender do utilizador.
 Implementar uma condicao de game over quando os blocos atingem o inicio do tabuleiro.
+Adicionar Pontuacao ao jogo
+Fazer que os blocos desaparecam quando o jogador fizer pontos.
 
+
+===============================
+## Sessao 5
+**Funcionalidades implementadas**
+Implementacao de  uma condicao de game over quando os blocos atingem o inicio do tabuleiro.
+Implementacao da gravidade automatica com temporizador em tempo real utilizando _kbhit() e sleep() para que o bloco desca sem depender dos comandos do utilizador.
+Implementacao do clear_lines juntamente com o score do jogo, se os blocos preencherem a linha do tabuleiro, efetua o clear e adiciona 100 pontos.
+
+**Maior dificuldade encontrada e como resolvi(ou nao resolvi)**
+Fazer que o clear_lines funciona-se juntamente com o score.
+Erros com o kbhit() e sleep()
+
+**Proximo passo planeado**
+Remover o "flicker" quando o jogo esta a ser corrido.
+Remover o cursor da consola.
+Implementar o kbhit() e sleep() a modo que funcione.
+
+===============================
+## Sessao 6
+**Funcionalidades implementadas**
+Removido o flicker do ecra com SetConsoleCursorPosition().
+Ocultacao do cursor do jogador.
+Implementacao do kbhit() e sleep()
+Implementacao do print: GAME OVER/Pontuacao final e o respetivo Score.
+
+**Maior dificuldade encontrada e como resolvi(ou nao resolvi)**
+Implementar o kbhit e sleep()
+Codigo deixou de funcionar apos adicionar SetConsoleCursorPosition e "cls" e tentar remover o cursor do jogo.
+
+**Proximo passo planeado**
+Adicionar "Proxima peca" no painel.
+Adicionar Som quando o jogador faz pontos ou quando a peca da lock.
+
+
+===============================
+## Sessao 7
+**Funcionalidades implementadas**
+Implementacao da visualizacao da "Proxima Peca"
+Criacao do painel lateral na interface.
+
+**Maior dificuldade encontrada e como resolvi(ou nao resolvi)**
+Implementar a proxima peca no codigo sem dar erro
+
+**Proximo passo planeado**
+Adicionar Som ao jogo.
 
 

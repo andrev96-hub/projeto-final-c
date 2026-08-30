@@ -1,9 +1,10 @@
 #include <stdio.h>  
-#include <stdlib.h>  //lib para a funcao rand() prar gerar numeros aleatorios
-#include <conio.h>   // lib para a funcao _getch(), para as teclas 
-//include <windows.h>
+#include <stdlib.h>   // lib para rand()
+#include <conio.h>   // _getch() e _kbhit()
+#include <windows.h>
+#include <time.h>
 
-// Definir o board
+
 #define board_width 10
 #define board_height 20
 
@@ -13,26 +14,24 @@ int x = 3;
 int y = 0;
 int score = 0;
 int game_over = 0;
+int next_piece_type =0;
 
-
-int shapes[4][4][4]={
+int shapes[4][4][4] = {
     {
         {0,1,1,0},
-        {0,1,1,0}, // quadrado
+        {0,1,1,0}, // Quadrado
         {0,0,0,0},
         {0,0,0,0}
     },
-
     {
         {0,0,0,0},
-        {1,1,1,1},  // Linha
+        {1,1,1,1}, // Linha
         {0,0,0,0},
         {0,0,0,0}
     },
-
     {
         {0,1,0,0},
-        {1,1,1,0}, // T?
+        {1,1,1,0}, // T
         {0,0,0,0},
         {0,0,0,0}
     },
@@ -44,56 +43,73 @@ int shapes[4][4][4]={
     }
 };
 
-void init_board(){
-    int h, w;
-    for (h=0; h<board_height;h++){
-        for (w=0; w<board_width;w++){
+void init_board() {
+    for (int h = 0; h < board_height; h++) {
+        for (int w = 0; w < board_width; w++) {
             board[h][w] = 0;    
         }
     }
 }
- void Piece(){
-    x =3;
-    y =0;
-    int random= rand() % 4;  //escolher uma das 4 formas
-    int h,w;
-    for (h=0 ; h<4; h++){
-        for (w=0; w<4;w++){
-            current_piece[h][w] = shapes[random][h][w];
-        }
-    }
-}
 
- int collision(int newX, int newY){ // ir para a nova posicao e ver se colide com outra peca ou parede
-    int h, w;
-    for (h=0; h<4;h++){
-        for (w=0;w<4;w++){
-            if (current_piece[h][w] == 1){
+int collision(int piece[4][4], int newX, int newY) {
+    for (int h = 0; h < 4; h++) {
+        for (int w = 0; w < 4; w++) {
+            if (piece[h][w] == 1) {
                 int boardX = newX + w;
                 int boardY = newY + h;
+                
                 if (boardX < 0 || boardX >= board_width ||
                     boardY < 0 || boardY >= board_height ||
-                    board[boardY][boardX] == 1){
+                    board[boardY][boardX] == 1) {
                     return 1;
                 }
             }
         }
     }
     return 0;
- }
+}
 
- void lock() {
-    int h, w;
-    for (h = 0;h<4;h++){
-        for(w=0;w<4;w++){
-            if(current_piece[h][w] ==1){
+void Piece() {
+    x = 3;
+    y = 0;
+    for (int h = 0; h < 4; h++) {
+        for (int w = 0; w < 4; w++) {
+            current_piece[h][w] = shapes[next_piece_type][h][w];
+        }
+    }
+    next_piece_type = rand() % 4;
+    if (collision(current_piece, x, y)) {
+        game_over = 1;
+    }
+}
+
+void rotate_piece() {
+    int temp[4][4];
+    for (int h = 0; h < 4; h++) {
+        for (int w = 0; w < 4; w++) {
+            temp[w][3 - h] = current_piece[h][w];
+        }
+    }
+    if (!collision(temp, x, y)) {
+        for (int h = 0; h < 4; h++) {
+            for (int w = 0; w < 4; w++) {
+                current_piece[h][w] = temp[h][w];
+            }
+        }
+    }
+}
+
+void lock() {
+    for (int h = 0; h < 4; h++) {
+        for (int w = 0; w < 4; w++) {
+            if (current_piece[h][w] == 1) {
                 board[y + h][x + w] = 1;
             }
         }
     }
- }
+}
 
- void clear_lines() {
+void clear_lines() {
     for (int h = board_height - 1; h >= 0; h--) {
         int full = 1;
         for (int w = 0; w < board_width; w++) {
@@ -116,57 +132,94 @@ void init_board(){
         }
     }
 }
+
 void game() {
-    int h, w;
-    for (h = 0; h < 20; h++) { // 20 altura
+    
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+
+    printf("Pontuacao: %d\n", score);
+    printf("+----------+\n");
+    for (int h = 0; h < board_height; h++) {
         printf("|");
-        for (w = 0; w < 10; w++) { // 10 largura
-            
+        for (int w = 0; w < board_width; w++) {
             if (h >= y && h < y + 4 && w >= x && w < x + 4 && current_piece[h - y][w - x] == 1) {
                 printf("O");
             } else if (board[h][w] == 1) { 
                 printf("X");
             } else {
-             printf("."); // vazio
+                printf(".");
             }
         }
-        printf("|\n");
+        printf("|");
+
+        
+        if (h == 0) {
+            printf("  PROXIMA PECA:");
+        } else if (h >= 1 && h <= 4) {
+            printf("  ");
+            int preview_row = h - 1;
+            for (int pw = 0; pw < 4; pw++) {
+                if (shapes[next_piece_type][preview_row][pw] == 1) {
+                    printf("O");
+                } else {
+                    printf(" ");
+                }
+            }
+        }
+        printf("\n");
     }
+    printf("+----------+\n");
 }
-                            
-                        
+
 int main(void) {
+    
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
+
+    system("cls");
+    srand((unsigned int)time(NULL));
+    next_piece_type = rand() % 4;
     init_board();
     Piece();
 
-    char input_key;
+    int timer = 0;
 
-    while (game_over == 0) {
+    while (!game_over) {
         game();
-        input_key = _getch();
 
-        if (input_key == 'a') {
-            if (collision(x - 1, y) == 0) {
-                x = x - 1;
-            }
-        } else if (input_key == 'd') {
-            if (collision(x + 1, y) == 0) {
-                x = x + 1;
-            }
-        } else if (input_key == 's') {
-            if (collision(x, y + 1) == 0) {
-                y = y + 1;
-            } else {
-                lock();
-                Piece();
+        if (_kbhit()) {
+            char input_key = _getch();
+            if (input_key == 'a' && !collision(current_piece, x - 1, y)) {
+                x--;
+            } else if (input_key == 'd' && !collision(current_piece, x + 1, y)) {
+                x++;
+            } else if (input_key == 's' && !collision(current_piece, x, y + 1)) {
+                y++;
+            } else if (input_key == 'w') {
+                rotate_piece();
             }
         }
+
+        if (timer > 10) {
+            if (!collision(current_piece, x, y + 1)) {
+                y++;
+            } else {
+                lock();
+                clear_lines();
+                Piece();
+            }
+            timer = 0;
+        }
+
+        timer++;
+        Sleep(30);
     }
 
+    system("cls");
+    printf("GAME OVER!\nPontuacao Final: %d\n", score);
     return 0;
 }
-
-            
-        
-
-    
