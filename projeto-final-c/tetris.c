@@ -93,6 +93,29 @@ void init_board(){
     }
  }
 
+ void clear_lines() {
+    for (int h = board_height - 1; h >= 0; h--) {
+        int full = 1;
+        for (int w = 0; w < board_width; w++) {
+            if (board[h][w] == 0) {
+                full = 0;
+                break;
+            }
+        }
+        if (full) {
+            score += 100;
+            for (int move_h = h; move_h > 0; move_h--) {
+                for (int w = 0; w < board_width; w++) {
+                    board[move_h][w] = board[move_h - 1][w];
+                }
+            }
+            for (int w = 0; w < board_width; w++) {
+                board[0][w] = 0;
+            }
+            h++;
+        }
+    }
+}
 void game() {
     int h, w;
     for (h = 0; h < 20; h++) { // 20 altura
