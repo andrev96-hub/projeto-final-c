@@ -2,7 +2,7 @@
 #include <stdlib.h>   // lib para rand()
 #include <conio.h>   // _getch() e _kbhit()
 #include <windows.h>
-#include <time.h>
+#include <time.h>    // time(NULL)
 
 
 #define board_width 10
@@ -44,14 +44,14 @@ int shapes[4][4][4] = {
 };
 
 void init_board() {
-    for (int h = 0; h < board_height; h++) {
+    for (int h = 0; h < board_height; h++) {   
         for (int w = 0; w < board_width; w++) {
             board[h][w] = 0;    
         }
     }
 }
 
-int collision(int piece[4][4], int newX, int newY) {
+int collision(int piece[4][4], int newX, int newY) {  //verifica se uma peca na nova posicao colide com as bordas ou pecas
     for (int h = 0; h < 4; h++) {
         for (int w = 0; w < 4; w++) {
             if (piece[h][w] == 1) {
@@ -70,15 +70,15 @@ int collision(int piece[4][4], int newX, int newY) {
 }
 
 void Piece() {
-    x = 3;
+    x = 3;  //posicao inicial
     y = 0;
-    for (int h = 0; h < 4; h++) {
+    for (int h = 0; h < 4; h++) {   
         for (int w = 0; w < 4; w++) {
             current_piece[h][w] = shapes[next_piece_type][h][w];
         }
     }
-    next_piece_type = rand() % 4;
-    if (collision(current_piece, x, y)) {
+    next_piece_type = rand() % 4;  // random peca
+    if (collision(current_piece, x, y)) {  
         game_over = 1;
     }
 }
@@ -136,7 +136,7 @@ void clear_lines() {
 void game() {
     
     COORD coord = {0, 0};
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);   
 
     printf("Pontuacao: %d\n", score);
     printf("+----------+\n");
